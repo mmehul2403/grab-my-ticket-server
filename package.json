@@ -1,0 +1,34 @@
+{
+  "name": "grab-my-ticket-server",
+  "version": "1.0.0",
+  "description": "GrabMyTicket server ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mmehul2403/grab-my-ticket.git"
+  },
+  "keywords": [
+    "booking",
+    "movie",
+    "online",
+    "Capstone",
+    "project"
+  ],
+  "author": "Mehul, Ravi, Yingying (Emma)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmehul2403/grab-my-ticket/issues"
+  },
+  "homepage": "https://github.com/mmehul2403/grab-my-ticket#readme",
+  "dependencies": {
+    "apollo-server-express": "^3.13.0",
+    "express": "^4.19.2",
+    "graphql": "^16.8.1",
+    "mysql2": "^3.9.7",
+    "sequelize": "^6.37.3"
+  }
+}
