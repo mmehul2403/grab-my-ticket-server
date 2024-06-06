@@ -1,7 +1,9 @@
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const sequelize = require("./config/database");
-const Data = require("./models/Data");
+
+// Grab the Data model from the models directory
+const { Data } = require("./models");
 
 // Sample typeDefs and resolvers
 const typeDefs = gql`
@@ -15,6 +17,7 @@ const typeDefs = gql`
   }
 `;
 
+// Find all data from the Data table
 const resolvers = {
   Query: {
     data: async () => await Data.findAll(),
@@ -25,31 +28,30 @@ async function startServer() {
   const app = express();
   const server = new ApolloServer({ typeDefs, resolvers });
 
-  await server.start();
-  server.applyMiddleware({ app });
+  try {
+    // Sync database
+    await sequelize.authenticate(); // Test database connection
+    console.log("Database connection has been established successfully.");
 
-  // Syncing the database without dropping tables
-  sequelize
-    .sync()
-    .then(async () => {
-      console.log("Database connected and synced.");
+    await sequelize.sync({ force: false });
+    console.log("Database tables are created.");
 
-      // Check if the database is empty before inserting sample data
-      const dataCount = await Data.count();
-      if (dataCount === 0) {
-        await Data.create({ value: "First value" });
-        await Data.create({ value: "Second value" });
-      }
+    const dataCount = await Data.count();
+    if (dataCount === 0) {
+      await Data.create({ value: "First value" });
+      await Data.create({ value: "Second value" });
+    }
 
-      app.listen({ port: 4000 }, () =>
-        console.log(
-          `Server ready at http://localhost:4000${server.graphqlPath}`
-        )
-      );
-    })
-    .catch((err) => {
-      console.error("Unable to connect to the database:", err);
+    await server.start();
+    server.applyMiddleware({ app });
+
+    app.listen({ port: 4000 }, () => {
+      console.log("Server started on http://localhost:4000/graphql");
     });
+  } catch (error) {
+    console.error("Error occurred while starting server:", error);
+    process.exit(1); // Exit the application with a non-zero exit code
+  }
 }
 
 startServer();
