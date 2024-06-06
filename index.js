@@ -1,46 +1,32 @@
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
-const sequelize = require("./config/database");
+const bodyParser = require("body-parser");
+const { ApolloServer } = require("apollo-server-express");
+const sequelizeDatabase = require("./config/database");
+const MovieRoutes = require("./routes/MovieRoute");
+const typeDefs = require("./schema/MovieSchema");
+const resolvers = require("./resolvers/MovieResolver");
 
-// Grab the Data model from the models directory
-const { Data } = require("./models");
-
-// Sample typeDefs and resolvers
-const typeDefs = gql`
-  type Query {
-    data: [Data]
-  }
-
-  type Data {
-    id: ID
-    value: String
-  }
-`;
-
-// Find all data from the Data table
-const resolvers = {
-  Query: {
-    data: async () => await Data.findAll(),
-  },
-};
+// Sync the Movie model with the database
+sequelizeDatabase.sync({ force: false }).then(() => {
+  console.log("Database & tables created!");
+});
 
 async function startServer() {
   const app = express();
-  const server = new ApolloServer({ typeDefs, resolvers });
+  app.use(bodyParser.json());
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: { sequelizeDatabase },
+  });
 
   try {
-    // Sync database
-    await sequelize.authenticate(); // Test database connection
+    // Test database connection
+    await sequelizeDatabase.authenticate();
     console.log("Database connection has been established successfully.");
 
-    await sequelize.sync({ force: false });
-    console.log("Database tables are created.");
-
-    const dataCount = await Data.count();
-    if (dataCount === 0) {
-      await Data.create({ value: "First value" });
-      await Data.create({ value: "Second value" });
-    }
+    app.use("/movies", MovieRoutes);
 
     await server.start();
     server.applyMiddleware({ app });
@@ -50,7 +36,7 @@ async function startServer() {
     });
   } catch (error) {
     console.error("Error occurred while starting server:", error);
-    process.exit(1); // Exit the application with a non-zero exit code
+    process.exit(1);
   }
 }
 
