@@ -1,11 +1,13 @@
 const { gql } = require("apollo-server-express");
 
 const MovieSchema = gql`
+  scalar Date
+
   type Movie {
     movie_id: Int!
     movie_name: String
     duration_seconds: Int
-    release_date: String
+    release_date: Date
     review_score: Float
     image_url: String
   }
@@ -19,7 +21,7 @@ const MovieSchema = gql`
     createMovie(
       movie_name: String!
       duration_seconds: Int
-      release_date: String
+      release_date: Date
       review_score: Float
       image_url: String
     ): Movie
@@ -27,7 +29,7 @@ const MovieSchema = gql`
       movie_id: Int!
       movie_name: String
       duration_seconds: Int
-      release_date: String
+      release_date: Date
       review_score: Float
       image_url: String
     ): Movie
