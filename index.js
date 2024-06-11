@@ -7,6 +7,8 @@ const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
 const path = require("path");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 
+const index = require("./models/index");
+
 // Sync the Movie model with the database
 sequelizeDatabase.sync({ force: false }).then(() => {
   console.log("Database & tables created!");
