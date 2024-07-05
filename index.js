@@ -6,6 +6,7 @@ const MovieRoutes = require("./routes/MovieRoute");
 const typeDefs = require("./schema/MovieSchema");
 const resolvers = require("./resolvers/MovieResolver");
 const index = require("./models/index");
+const path = require("path");
 
 // Sync the Movie model with the database
 sequelizeDatabase.sync({ force: false }).then(() => {
@@ -14,6 +15,8 @@ sequelizeDatabase.sync({ force: false }).then(() => {
 
 async function startServer() {
   const app = express();
+  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
   app.use(bodyParser.json());
 
   const server = new ApolloServer({
