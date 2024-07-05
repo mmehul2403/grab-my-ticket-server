@@ -3,8 +3,10 @@ const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
 const sequelizeDatabase = require("./config/database");
 const MovieRoutes = require("./routes/MovieRoute");
-const typeDefs = require("./schema/MovieSchema");
-const resolvers = require("./resolvers/MovieResolver");
+const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
+const path = require("path");
+const { loadFilesSync } = require("@graphql-tools/load-files");
+
 const index = require("./models/index");
 const path = require("path");
 
@@ -19,9 +21,15 @@ async function startServer() {
 
   app.use(bodyParser.json());
 
+  const typesArray = loadFilesSync(path.join(__dirname, "./schema"));
+
+  let mergeTypeDefsRes = mergeTypeDefs(typesArray);
+  const resolversArr = loadFilesSync(path.join(__dirname, "./resolvers"));
+  let mergeResolversRes = mergeResolvers(resolversArr);
+
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    typeDefs: mergeTypeDefsRes,
+    resolvers: mergeResolversRes,
     context: { sequelizeDatabase },
   });
 
