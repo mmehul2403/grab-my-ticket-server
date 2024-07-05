@@ -8,7 +8,6 @@ const path = require("path");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 
 const index = require("./models/index");
-const path = require("path");
 
 // Sync the Movie model with the database
 sequelizeDatabase.sync({ force: false }).then(() => {

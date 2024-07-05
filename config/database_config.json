@@ -19,5 +19,12 @@
     "database": "grab_my_ticket",
     "host": "localhost",
     "dialect": "mysql"
+  },
+  "MehulDevelopment": {
+    "username": "root",
+    "password": "",
+    "database": "grab_my_ticket_dev",
+    "host": "localhost",
+    "dialect": "mysql"
   }
 }
