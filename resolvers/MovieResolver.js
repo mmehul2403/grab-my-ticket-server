@@ -6,7 +6,7 @@ const MovieResolver = {
     movie: async (parent, args) => {
       return await Movie.findByPk(args.movie_id);
     },
-    movies: async (parent, args) => {
+    movies: async (parent, args, ctx) => {
       const { page = 1, size = 10 } = args;
       const limit = size;
       const offset = (page - 1) * limit;

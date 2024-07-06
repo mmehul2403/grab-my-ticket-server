@@ -1,22 +1,15 @@
 const { Sequelize } = require("sequelize");
-const config = require("./database_config.json")[
-  process.env.NODE_ENV || "development"
-];
-
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    dialect: config.dialect,
-  }
-);
+const dbconfig = require("./database_config.json")[process.env.NODE_ENV || "development"];
+const mysqlConfig = dbconfig.mysql;
+const sequelize = new Sequelize(mysqlConfig.database, mysqlConfig.username, mysqlConfig.password, {
+  host: mysqlConfig.host,
+  dialect: mysqlConfig.dialect,
+});
 
 sequelize
-  .query(`CREATE DATABASE IF NOT EXISTS ${config.database};`)
+  .query(`CREATE DATABASE IF NOT EXISTS ${mysqlConfig.database};`)
   .then(() => {
-    console.log(`Database "${config.database}" created or already exists.`);
+    console.log(`Database "${mysqlConfig.database}" created or already exists.`);
     return sequelize.authenticate();
   })
   .then(() => {

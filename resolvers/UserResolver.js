@@ -9,9 +9,9 @@ const UserResolver = {
     validateEmail: async (_, args) => {
       return await User.findByPk(args.user_id);
     },
-    signIn: async (_, args) => {
+    signIn: async (_, args, ctx) => {
       let user = await User.findOne({
-        attributes: ["password"],
+        attributes: ["password", "user_id"],
         where: {
           email_address: args.email_address,
         },
@@ -22,6 +22,11 @@ const UserResolver = {
       }
       let isvalid = bcrypt.compareSync(args.password, user.password);
       if (isvalid) {
+        // req.session.loginUserType = userType;
+
+        ctx.req.session.userId = user.user_id;
+        // req.session.isValidated = true;
+        console.log(" ctx.req.session.userId:" + ctx.req.session.userId);
         return { code: 0, message: "success" };
       } else {
         return { code: 1, message: "username or password is not correct." };
