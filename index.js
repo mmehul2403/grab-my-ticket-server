@@ -21,6 +21,8 @@ sequelizeDatabase.sync({ force: false }).then(() => {
 
 async function startServer() {
   const app = express();
+  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
   app.use(bodyParser.json());
 
   const session_store = new MongoDBStore(

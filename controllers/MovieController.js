@@ -2,7 +2,20 @@ const Movie = require("../models/Movie")(require("../config/database"));
 
 exports.createMovie = async (req, res) => {
   try {
-    const movie = await Movie.create(req.body);
+    const { movie_name, duration_seconds, release_date, review_score } =
+      req.body;
+    const image_url = req.file
+      ? `/uploads/movie_poster_images/${req.file.filename}`
+      : null;
+
+    const movie = await Movie.create({
+      movie_name,
+      duration_seconds,
+      release_date,
+      review_score,
+      image_url,
+    });
+
     res.status(201).json(movie);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -15,7 +28,21 @@ exports.updateMovie = async (req, res) => {
     if (!movie) {
       return res.status(404).json({ error: "Movie not found" });
     }
-    await movie.update(req.body);
+
+    const { movie_name, duration_seconds, release_date, review_score } =
+      req.body;
+    const image_url = req.file
+      ? `/uploads/${req.file.filename}`
+      : movie.image_url;
+
+    await movie.update({
+      movie_name,
+      duration_seconds,
+      release_date,
+      review_score,
+      image_url,
+    });
+
     res.status(200).json(movie);
   } catch (error) {
     res.status(400).json({ error: error.message });

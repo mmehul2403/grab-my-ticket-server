@@ -28,5 +28,15 @@
       "dialect": "mysql"
     },
     "mongoUrl": "mongodb+srv://grabmyticket:loOlfUUrjjHz1yWD@clusteryy.rfwy8jx.mongodb.net/?retryWrites=true&w=majority&appName=clusteryy"
+  },
+  "MehulDevelopment": {
+    "mysql": {
+      "username": "root",
+      "password": "",
+      "database": "grab_my_ticket_dev",
+      "host": "localhost",
+      "dialect": "mysql"
+    },
+    "mongoUrl": "mongodb+srv://grabmyticket:loOlfUUrjjHz1yWD@clusteryy.rfwy8jx.mongodb.net/?retryWrites=true&w=majority&appName=clusteryy"
   }
 }
