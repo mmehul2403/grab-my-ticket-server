@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const dbconfig = require("./database_config.json")[process.env.NODE_ENV || "development"];
+const dbconfig = require("./db_config.json")[process.env.NODE_ENV || "development"];
 const mysqlConfig = dbconfig.mysql;
 const sequelize = new Sequelize(mysqlConfig.database, mysqlConfig.username, mysqlConfig.password, {
   host: mysqlConfig.host,

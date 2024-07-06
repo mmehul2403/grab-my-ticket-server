@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
 const sequelizeDatabase = require("./config/database");
 
-const dbconfig = require("./config/database_config.json")[process.env.NODE_ENV || "development"];
+const dbconfig = require("./config/db_config.json")[process.env.NODE_ENV || "development"];
 
 const MovieRoutes = require("./routes/MovieRoute");
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
