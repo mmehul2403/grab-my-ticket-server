@@ -45,13 +45,15 @@ const UserSchema = `#graphql
   type Query {
     getUserById(user_id: Int!): User
     validateEmail(email_address:String):Result
-    signIn(email_address:String,password:String):Result
+   
   }
 
   type Mutation {
     createUser(user: UserInput!): User
     updateUser(user: UserUpdate): User
     deleteUser(movie_id: Int!): User
+    signIn(email_address:String,password:String):Result
+    signOut:Result
   }
 `;
 
