@@ -3,6 +3,13 @@ const User = require("../models/User")(sequelizeDatabase);
 const bcrypt = require("bcryptjs-react");
 const UserResolver = {
   Query: {
+    currentUser: async (_, args, ctx) => {
+      let session_user_id = ctx.req.session.userId;
+      if (!session_user_id) {
+        return null;
+      }
+      return await User.findByPk(session_user_id);
+    },
     getUserById: async (_, args) => {
       return await User.findByPk(args.user_id);
     },
@@ -55,7 +62,10 @@ const UserResolver = {
         return { code: 1, message: "username or password is not correct." };
       }
     },
-    signOut: async (_, args, ctx) => {},
+    signOut: async (_, args, ctx) => {
+      ctx.req.session.destroy(function (err) {});
+      return { code: 0, message: "success" };
+    },
   },
 };
 

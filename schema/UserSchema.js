@@ -15,7 +15,7 @@ const UserSchema = `#graphql
   }
   type Result{
     code:Int,
-    message:String
+    message:String 
   }
 
   input UserInput {
@@ -42,7 +42,16 @@ const UserSchema = `#graphql
     email_address: String
     lock_status: Int
   }
+  type CurrentUser {
+    user_id: Int!
+    first_name: String
+    last_name: String
+    date_of_birth: String
+    register_date: String,
+    role: Int
+  }
   type Query {
+    currentUser:CurrentUser
     getUserById(user_id: Int!): User
     validateEmail(email_address:String):Result
    
