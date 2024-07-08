@@ -1,5 +1,8 @@
-const { gql } = require("apollo-server-express");
-
+/**
+ * @description UserSchema is designed for operations definitions with the table user
+ * @author Emma
+ * @date 2024-06
+ */
 const UserSchema = `#graphql
   type User {
     user_id: Int!
