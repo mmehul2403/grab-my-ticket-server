@@ -16,7 +16,8 @@ const MovieResolver = {
     movie: async (parent, { movie_id }) => {
       return await Movie.findByPk(movie_id);
     },
-    movies: async (parent, { page = 1, size = 10 }) => {
+    movies: async (parent, args, ctx) => {
+      const { page = 1, size = 10 } = args;
       const limit = size;
       const offset = (page - 1) * limit;
       const { rows } = await Movie.findAndCountAll({ limit, offset });

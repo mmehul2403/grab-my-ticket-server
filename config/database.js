@@ -14,9 +14,11 @@ const sequelize = new Sequelize(
 );
 
 sequelize
-  .query(`CREATE DATABASE IF NOT EXISTS ${config.database};`)
+  .query(`CREATE DATABASE IF NOT EXISTS ${mysqlConfig.database};`)
   .then(() => {
-    console.log(`Database "${config.database}" created or already exists.`);
+    console.log(
+      `Database "${mysqlConfig.database}" created or already exists.`
+    );
     return sequelize.authenticate();
   })
   .then(() => {
