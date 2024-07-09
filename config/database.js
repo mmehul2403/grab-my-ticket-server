@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 const config = require("./database_config.json")[
-  process.env.NODE_ENV || "development"
+  process.env.NODE_ENV || "MehulDevelopment"
 ];
 
 const sequelize = new Sequelize(
