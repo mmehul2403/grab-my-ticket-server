@@ -1,15 +1,15 @@
 const { Sequelize } = require("sequelize");
 const config = require("./database_config.json")[
-  process.env.NODE_ENV || "MehulDevelopment"
+  process.env.NODE_ENV || "development"
 ];
 
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
+  config.mysql.database,
+  config.mysql.username,
+  config.mysql.password,
   {
-    host: config.host,
-    dialect: config.dialect,
+    host: config.mysql.host,
+    dialect: config.mysql.dialect,
   }
 );
 
