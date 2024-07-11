@@ -37,6 +37,6 @@
       "host": "localhost",
       "dialect": "mysql"
     },
-    "mongoUrl": "mongodb+srv://grabmyticket:loOlfUUrjjHz1yWD@clusteryy.rfwy8jx.mongodb.net/?retryWrites=true&w=majority&appName=clusteryy"
+    "mongoUrl": "mongodb+srv://mmehul2403:grabmyticket@grabmyticket.0htxziw.mongodb.net/"
   }
 }
