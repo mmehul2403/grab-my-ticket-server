@@ -36,7 +36,7 @@ const MovieResolver = {
         const stream = createReadStream();
         const fileName = `${filename}`;
         const filePath = path.join(uploadDir, fileName);
-        image_url = `${fileName}`;
+        image_url = `uploads/movie_poster_images/${fileName}`;
 
         await new Promise((resolve, reject) => {
           const writeStream = fs.createWriteStream(filePath);

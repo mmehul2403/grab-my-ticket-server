@@ -4,7 +4,7 @@ const { ApolloServer } = require("apollo-server-express");
 const { graphqlUploadExpress, GraphQLUpload } = require("graphql-upload");
 const sequelizeDatabase = require("./config/database");
 
-const dbconfig = require("./config/db_config.json")[
+const dbconfig = require("./config/database_config.json")[
   process.env.NODE_ENV || "development"
 ];
 
