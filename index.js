@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
+const { graphqlUploadExpress, GraphQLUpload } = require("graphql-upload");
 const sequelizeDatabase = require("./config/database");
 
-const dbconfig = require("./config/db_config.json")[process.env.NODE_ENV || "development"];
+const dbconfig = require("./config/db_config.json")[
+  process.env.NODE_ENV || "development"
+];
 
 const MovieRoutes = require("./routes/MovieRoute");
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
@@ -22,7 +25,7 @@ sequelizeDatabase.sync({ force: false }).then(() => {
 async function startServer() {
   const app = express();
   app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+  app.use(graphqlUploadExpress());
   app.use(bodyParser.json());
 
   const session_store = new MongoDBStore(
@@ -58,6 +61,8 @@ async function startServer() {
   const server = new ApolloServer({
     typeDefs: mergeTypeDefsRes,
     resolvers: mergeResolversRes,
+    context: { sequelizeDatabase },
+    uploads: false, //I disabled built in upload handeling of GraphQL
     context: async ({ req, res }) => ({
       req,
       res,
@@ -65,7 +70,6 @@ async function startServer() {
   });
 
   try {
-    // Test database connection
     await sequelizeDatabase.authenticate();
     console.log("Database connection has been established successfully.");
 
