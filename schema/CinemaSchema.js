@@ -17,7 +17,13 @@ const CinemaSchema = `#graphql
     data:Cinema
   }
 
-  input CinemaInput {
+  input CinemaInputCreate {
+   
+    cinema_name: String
+    cinema_address: String
+    telephone_number: String
+  }
+  input CinemaInputUpdate {
     cinema_id: Int,
     cinema_name: String
     cinema_address: String
@@ -30,8 +36,8 @@ const CinemaSchema = `#graphql
   }
 
   type Mutation {
-    createCinema(cinema: CinemaInput!): Result
-    updateCinema(cicinema: CinemaInput!): Result
+    createCinema(cinema: CinemaInputCreate!): Result
+    updateCinema(cicinema: CinemaInputUpdate!): Result
     deleteCinema(cinema_id: Int!): Result
     
   }
