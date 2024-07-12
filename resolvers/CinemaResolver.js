@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 /*

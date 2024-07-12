@@ -4,9 +4,7 @@ const { ApolloServer } = require("apollo-server-express");
 const { graphqlUploadExpress, GraphQLUpload } = require("graphql-upload");
 const sequelizeDatabase = require("./config/database");
 
-const dbconfig = require("./config/database_config.json")[
-  process.env.NODE_ENV || "development"
-];
+const dbconfig = require("./config/db_config.json")[process.env.NODE_ENV || "development"];
 
 const MovieRoutes = require("./routes/MovieRoute");
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
@@ -76,10 +74,7 @@ async function startServer() {
     // started Apollo Server
     await server.start();
     //Configured apollo and react application
-    const allowedOrigins = [
-      "https://studio.apollographql.com",
-      "http://localhost:3000",
-    ];
+    const allowedOrigins = ["https://studio.apollographql.com", "http://localhost:3000"];
     const corsOptions = {
       origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {

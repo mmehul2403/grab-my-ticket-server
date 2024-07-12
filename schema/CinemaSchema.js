@@ -18,19 +18,20 @@ const CinemaSchema = `#graphql
   }
 
   input CinemaInput {
+    cinema_id: Int,
     cinema_name: String
     cinema_address: String
     telephone_number: String
   }
   
   type Query {
-    queryCinemaBy(cinema_name: String!): [Cinema]
+    queryCinemaBy(cinema_name: String): [Cinema]
     queryCinemaById(cinema_id: Int!): Cinema
   }
 
   type Mutation {
     createCinema(cinema: CinemaInput!): Result
-    updateCinema(cicinema: Cinema!): Result
+    updateCinema(cicinema: CinemaInput!): Result
     deleteCinema(cinema_id: Int!): Result
     
   }
