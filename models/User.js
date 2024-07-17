@@ -1,7 +1,8 @@
 const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
 module.exports = (sequelize) => {
-  const SysUser = sequelize.define("User", {
+  const User = sequelize.define("User", {
     user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -41,9 +42,9 @@ module.exports = (sequelize) => {
       default: "",
     },
     role: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ENUM("User", "Cinema", "Admin"),
       allowNull: true,
-      default: 0,
+      defaultValue: "User",
     },
     lock_status: {
       type: DataTypes.INTEGER,
@@ -52,5 +53,5 @@ module.exports = (sequelize) => {
     },
   });
 
-  return SysUser;
+  return User;
 };

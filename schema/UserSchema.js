@@ -4,13 +4,20 @@
  * @date 2024-06
  */
 const UserSchema = `#graphql
+
+enum UserRole {
+    User
+    Cinema
+    Admin
+  }
+
   type User {
     user_id: Int!
     first_name: String
     last_name: String
     date_of_birth: String
     register_date: String
-    role: Int
+    role: UserRole
     password: String
     telephone_number: String
     email_address: String
@@ -26,7 +33,7 @@ const UserSchema = `#graphql
     last_name: String
     date_of_birth: String
     register_date: String
-    role: Int
+    role: UserRole
     password: String
     telephone_number: String
     email_address: String
@@ -39,7 +46,7 @@ const UserSchema = `#graphql
     last_name: String
     date_of_birth: String
     register_date: String
-    role: Int
+    role: UserRole
     password: String
     telephone_number: String
     email_address: String
@@ -51,7 +58,7 @@ const UserSchema = `#graphql
     last_name: String
     date_of_birth: String
     register_date: String,
-    role: Int
+    role: UserRole
   }
   type Query {
     currentUser:CurrentUser
