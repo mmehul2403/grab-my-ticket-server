@@ -29,9 +29,9 @@ const CinemaResolver = {
       return { code: 0, message: "success", data: await Cinema.create(newCinema) };
     },
     updateCinema: async (_, args) => {
-      const cinema = await Cinema.findByPk(args.cinema_id);
+      const cinema = await Cinema.findByPk(args.cinema.cinema_id);
       if (!cinema) throw new Error("Cinema not found");
-      await cinema.update(args);
+      await cinema.update(args.cinema);
       return { code: 0, message: "success", data: cinema };
     },
     deleteCinema: async (_, args) => {

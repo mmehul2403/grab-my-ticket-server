@@ -37,7 +37,7 @@ const CinemaSchema = `#graphql
 
   type Mutation {
     createCinema(cinema: CinemaInputCreate!): Result
-    updateCinema(cicinema: CinemaInputUpdate!): Result
+    updateCinema(cinema: CinemaInputUpdate!): Result
     deleteCinema(cinema_id: Int!): Result
     
   }
