@@ -3,9 +3,9 @@ const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
 const { graphqlUploadExpress } = require("graphql-upload");
 const sequelizeDatabase = require("./config/database");
-const dbconfig = require("./config/db_config.json")[
-  process.env.NODE_ENV || "development"
-];
+
+const dbconfig = require("./config/db_config.json")[process.env.NODE_ENV || "development"];
+
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
 const path = require("path");
 const { loadFilesSync } = require("@graphql-tools/load-files");
@@ -38,10 +38,7 @@ async function startServer() {
     console.log("###" + error);
   });
 
-  const allowedOrigins = [
-    "https://studio.apollographql.com",
-    "http://localhost:3000",
-  ];
+  const allowedOrigins = ["https://studio.apollographql.com", "http://localhost:3000"];
   const corsOptions = {
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
@@ -90,6 +87,22 @@ async function startServer() {
     await sequelizeDatabase.authenticate();
     console.log("Database connection has been established successfully.");
     await server.start();
+    //Configured apollo and react application
+    const allowedOrigins = ["https://studio.apollographql.com", "http://localhost:3000"];
+    const corsOptions = {
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      credentials: true,
+    };
+
+    app.use(cors(corsOptions));
+
+    // Added the Apollo GraphQL middleware and set the path to /graphql or /api
     server.applyMiddleware({ app, path: "/graphql", cors: false });
 
     app.listen({ port: 4000 }, () => {
