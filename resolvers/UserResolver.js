@@ -21,9 +21,7 @@ const UserResolver = {
   Mutation: {
     createUser: async (_, args) => {
       let newUser = args.user;
-      newUser.role = 0;
       newUser.lock_status = 0;
-
       return await User.create(newUser);
       // return 1;
     },
