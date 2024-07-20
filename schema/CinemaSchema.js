@@ -1,45 +1,42 @@
 /**
  * @description CinemaSchema is designed for operations definitions with the table Cinema
- * @author Emma
+ * @author Emma & Mehul
  * @date 2024-07-08
  */
-const CinemaSchema = `#graphql
+const { gql } = require("apollo-server-express");
+
+const CinemaSchema = gql`
   type Cinema {
     cinema_id: Int!
     cinema_name: String
     cinema_address: String
     telephone_number: String
-    
-  }
-  type Result{
-    code:Int!,
-    message:String!,
-    data:Cinema
+    city: City
+    province: Province
   }
 
-  input CinemaInputCreate {
-   
-    cinema_name: String
-    cinema_address: String
-    telephone_number: String
-  }
-  input CinemaInputUpdate {
-    cinema_id: Int,
-    cinema_name: String
-    cinema_address: String
-    telephone_number: String
-  }
-  
   type Query {
-    queryCinemaBy(cinema_name: String): [Cinema]
-    queryCinemaById(cinema_id: Int!): Cinema
+    cinemas: [Cinema]
+    cinema(cinema_id: Int!): Cinema
   }
 
   type Mutation {
-    createCinema(cinema: CinemaInputCreate!): Result
-    updateCinema(cinema: CinemaInputUpdate!): Result
-    deleteCinema(cinema_id: Int!): Result
-    
+    createCinema(
+      cinema_name: String!
+      cinema_address: String!
+      cinema_city_id: Int!
+      cinema_province_id: Int!
+      telephone_number: String
+    ): Cinema
+    updateCinema(
+      cinema_id: Int!
+      cinema_name: String
+      cinema_address: String
+      cinema_city_id: Int
+      cinema_province_id: Int
+      telephone_number: String
+    ): Cinema
+    deleteCinema(cinema_id: Int!): Boolean
   }
 `;
 

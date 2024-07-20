@@ -1,7 +1,6 @@
 const { Sequelize } = require("sequelize");
 const config =
   require("./db_config.json")[process.env.NODE_ENV || "development"];
-
 const mysql_db = config.mysql;
 const sequelize = new Sequelize(
   mysql_db.database,
@@ -12,6 +11,22 @@ const sequelize = new Sequelize(
     dialect: mysql_db.dialect,
   }
 );
+
+const Province = require("../models/Province")(sequelize);
+const City = require("../models/City")(sequelize);
+const Cinema = require("../models/Cinema")(sequelize);
+
+const models = {
+  Province,
+  City,
+  Cinema,
+};
+
+Object.keys(models).forEach((modelName) => {
+  if (models[modelName].associate) {
+    models[modelName].associate(models);
+  }
+});
 
 sequelize
   .query(`CREATE DATABASE IF NOT EXISTS ${mysql_db.database};`)

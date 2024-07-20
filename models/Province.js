@@ -9,9 +9,20 @@ module.exports = (sequelize) => {
     },
     province_name: {
       type: DataTypes.STRING(100),
-      allowNull: true,
+      allowNull: false,
     },
   });
+
+  Province.associate = (models) => {
+    Province.hasMany(models.City, {
+      foreignKey: "province_id",
+      as: "cities",
+    });
+    Province.hasMany(models.Cinema, {
+      foreignKey: "cinema_province_id",
+      as: "cinemas",
+    });
+  };
 
   return Province;
 };
