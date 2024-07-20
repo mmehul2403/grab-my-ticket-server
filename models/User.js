@@ -10,23 +10,19 @@ module.exports = (sequelize) => {
     },
     email_address: {
       type: DataTypes.STRING(100),
-      allowNull: true,
-      default: "",
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING(100),
-      allowNull: true,
-      default: "",
+      allowNull: false,
     },
     first_name: {
       type: DataTypes.STRING(100),
-      allowNull: true,
-      default: "",
+      allowNull: false,
     },
     last_name: {
       type: DataTypes.STRING(100),
-      allowNull: true,
-      default: "",
+      allowNull: false,
     },
     date_of_birth: {
       type: DataTypes.STRING(100),
@@ -39,17 +35,17 @@ module.exports = (sequelize) => {
     telephone_number: {
       type: DataTypes.STRING(100),
       allowNull: true,
-      default: "",
+      defaultValue: null,
     },
     role: {
       type: DataTypes.ENUM("User", "Cinema", "Admin"),
-      allowNull: true,
+      allowNull: false,
       defaultValue: "User",
     },
     lock_status: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      default: 0,
+      defaultValue: 0,
     },
   });
 
