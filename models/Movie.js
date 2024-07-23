@@ -31,6 +31,16 @@ module.exports = (sequelize) => {
         allowNull: true,
         comment: "URL of the movie image",
       },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: "description of the movie",
+      },
+      likes: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "likes of the movie",
+      },
     },
     {
       tableName: "movie",
