@@ -36,6 +36,15 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
   });
-
+  ShowTime.associate = (models) => {
+    ShowTime.hasMany(models.Cinema, {
+      foreignKey: "cinema_id",
+      as: "cinema",
+    });
+    ShowTime.belongsTo(models.Movie, {
+      foreignKey: "movie_id",
+      as: "moive",
+    });
+  };
   return ShowTime;
 };

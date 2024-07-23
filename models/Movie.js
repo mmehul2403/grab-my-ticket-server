@@ -37,6 +37,11 @@ module.exports = (sequelize) => {
       timestamps: false,
     }
   );
-
+  Movie.associate = (models) => {
+    ShowTime.hasMany(models.ShowTime, {
+      foreignKey: "movie_id",
+      as: "showtimes",
+    });
+  };
   return Movie;
 };

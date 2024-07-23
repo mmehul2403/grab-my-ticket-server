@@ -1,5 +1,4 @@
 const { Sequelize, DataTypes } = require("sequelize");
-
 module.exports = (sequelize) => {
   const Cinema = sequelize.define("Cinema", {
     cinema_id: {
@@ -46,6 +45,10 @@ module.exports = (sequelize) => {
       foreignKey: "cinema_province_id",
       as: "province",
     });
+    // Cinema.belongsTo(models.ShowTime, {
+    //   foreignKey: "cinema_id",
+    //   as: "showtimes",
+    // });
   };
 
   return Cinema;
