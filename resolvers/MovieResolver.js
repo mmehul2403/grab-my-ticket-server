@@ -23,13 +23,16 @@ const MovieResolver = {
       const { rows } = await Movie.findAndCountAll({ limit, offset });
       return rows;
     },
+    getTop8Movies: async (_) => {
+      return Movie.findAll({
+        order: [["likes", "DESC"]],
+        limit: 8,
+      });
+    },
   },
 
   Mutation: {
-    createMovie: async (
-      parent,
-      { movie_name, duration_seconds, release_date, review_score, file }
-    ) => {
+    createMovie: async (parent, { movie_name, duration_seconds, release_date, review_score, file }) => {
       let image_url = null;
       if (file) {
         const { createReadStream, filename } = await file;
@@ -54,17 +57,7 @@ const MovieResolver = {
       return movie.dataValues;
     },
 
-    updateMovie: async (
-      parent,
-      {
-        movie_id,
-        movie_name,
-        duration_seconds,
-        release_date,
-        review_score,
-        file,
-      }
-    ) => {
+    updateMovie: async (parent, { movie_id, movie_name, duration_seconds, release_date, review_score, file }) => {
       const movie = await Movie.findByPk(movie_id);
       if (!movie) throw new Error("Movie not found");
 

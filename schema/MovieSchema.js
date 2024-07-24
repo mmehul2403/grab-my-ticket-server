@@ -16,29 +16,19 @@ const MovieSchema = gql`
     release_date: String!
     review_score: Float!
     image_url: String
+    description: String
+    likes: Int
   }
 
   type Query {
     movie(movie_id: ID!): Movie
     movies(page: Int, size: Int): [Movie]
+    getTop8Movies: [Movie]
   }
 
   type Mutation {
-    createMovie(
-      movie_name: String!
-      duration_seconds: Int!
-      release_date: String!
-      review_score: Float!
-      file: Upload
-    ): Movie
-    updateMovie(
-      movie_id: ID!
-      movie_name: String
-      duration_seconds: Int
-      release_date: String
-      review_score: Float
-      file: Upload
-    ): Movie
+    createMovie(movie_name: String!, duration_seconds: Int!, release_date: String!, review_score: Float!, file: Upload): Movie
+    updateMovie(movie_id: ID!, movie_name: String, duration_seconds: Int, release_date: String, review_score: Float, file: Upload): Movie
     deleteMovie(movie_id: ID!): Movie
   }
 `;
