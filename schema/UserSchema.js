@@ -3,9 +3,10 @@
  * @author Emma
  * @date 2024-06
  */
-const UserSchema = `#graphql
+const { gql } = require("apollo-server-express");
 
-enum UserRole {
+const UserSchema = gql`
+  enum UserRole {
     User
     Cinema
     Admin
@@ -23,9 +24,10 @@ enum UserRole {
     email_address: String
     lock_status: Int
   }
-  type Result{
-    code:Int,
-    message:String 
+
+  type Result {
+    code: Int
+    message: String
   }
 
   input UserInput {
@@ -52,27 +54,28 @@ enum UserRole {
     email_address: String
     lock_status: Int
   }
+
   type CurrentUser {
     user_id: Int!
     first_name: String
     last_name: String
     date_of_birth: String
-    register_date: String,
+    register_date: String
     role: UserRole
   }
+
   type Query {
-    currentUser:CurrentUser
+    currentUser: CurrentUser
     getUserById(user_id: Int!): User
-    validateEmail(email_address:String):Result
-   
+    validateEmail(email_address: String): Result
   }
 
   type Mutation {
     createUser(user: UserInput!): User
     updateUser(user: UserUpdate): User
-    deleteUser(movie_id: Int!): User
-    signIn(email_address:String,password:String):Result
-    signOut:Result
+    deleteUser(user_id: Int!): User
+    signIn(email_address: String, password: String): Result
+    signOut: Result
   }
 `;
 

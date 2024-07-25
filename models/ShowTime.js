@@ -51,6 +51,10 @@ module.exports = (sequelize) => {
       foreignKey: "movie_id",
       as: "moive",
     });
+    ShowTime.hasMany(models.OrderTable, {
+      foreignKey: "order_id",
+      as: "order",
+    });
   };
   return ShowTime;
 };

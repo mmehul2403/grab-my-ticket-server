@@ -48,6 +48,12 @@ module.exports = (sequelize) => {
       defaultValue: 0,
     },
   });
+  User.associate = (models) => {
+    User.hasMany(models.OrderTable, {
+      foreignKey: "user_id",
+      as: "order",
+    });
+  };
 
   return User;
 };
