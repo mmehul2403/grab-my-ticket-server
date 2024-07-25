@@ -20,6 +20,9 @@ const ShowTimeResolver = {
 
       return show_times;
     },
+    getShowTimeDetailById: async (_, args) => {
+      return await ShowTime.findByPk(args.showtime_id);
+    },
   },
   MovieCinemaShowTime: {
     cinema_name: async (cinema) => {
@@ -35,6 +38,11 @@ const ShowTimeResolver = {
           movie_id: showtime.movie_id,
         },
       });
+    },
+  },
+  ShowTimeOfCinema: {
+    cinema: async (showtime) => {
+      return await Cinema.findByPk(showtime.cinema_id);
     },
   },
 };

@@ -18,10 +18,12 @@ module.exports = (sequelize) => {
     seat_count: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      default: 0,
     },
     ticket_price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
+      default: 0,
     },
     show_date: {
       type: DataTypes.DATE,
@@ -34,6 +36,10 @@ module.exports = (sequelize) => {
     show_end_time: {
       type: DataTypes.TIME,
       allowNull: true,
+    },
+    available_seat_count: {
+      type: DataTypes.INTEGER,
+      default: 0,
     },
   });
   ShowTime.associate = (models) => {
