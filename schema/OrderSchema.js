@@ -17,7 +17,7 @@ const OrderSchema = gql`
 
   type Query {
     getOrderDetail(order_id: Int!): OrderDetail
-    getOrdersByUserId(user_id: Int!): [OrderDetail]
+    getOrdersByUserId: [OrderDetail]
   }
 
   type Mutation {

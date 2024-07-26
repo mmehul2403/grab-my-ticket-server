@@ -13,11 +13,13 @@ const OrderResolver = {
       return await OrderTable.findByPk(order_id);
     },
 
-    getOrdersByUserId: async (_, args) => {
+    getOrdersByUserId: async (_, args, ctx) => {
+      let session_user_id = ctx.req.session.userId;
+      // let session_user_id = 5;
       return await OrderTable.findAll({
         where: {
           user_id: {
-            [Op.eq]: args.user_id,
+            [Op.eq]: session_user_id,
           },
         },
       });
