@@ -32,7 +32,7 @@ const MovieResolver = {
   },
 
   Mutation: {
-    createMovie: async (parent, { movie_name, duration_seconds, release_date, review_score, file }) => {
+    createMovie: async (parent, { movie_name, duration_seconds, release_date, review_score, file, description, likes }) => {
       let image_url = null;
       if (file) {
         const { createReadStream, filename } = await file;
@@ -53,11 +53,13 @@ const MovieResolver = {
         release_date,
         review_score,
         image_url,
+        description,
+        likes,
       });
       return movie.dataValues;
     },
 
-    updateMovie: async (parent, { movie_id, movie_name, duration_seconds, release_date, review_score, file }) => {
+    updateMovie: async (parent, { movie_id, movie_name, duration_seconds, release_date, review_score, file, description, likes }) => {
       const movie = await Movie.findByPk(movie_id);
       if (!movie) throw new Error("Movie not found");
 
@@ -81,6 +83,8 @@ const MovieResolver = {
         release_date,
         review_score,
         image_url,
+        description,
+        likes,
       });
 
       return movie;

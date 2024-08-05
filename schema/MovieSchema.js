@@ -27,8 +27,8 @@ const MovieSchema = gql`
   }
 
   type Mutation {
-    createMovie(movie_name: String!, duration_seconds: Int!, release_date: String!, review_score: Float!, file: Upload): Movie
-    updateMovie(movie_id: ID!, movie_name: String, duration_seconds: Int, release_date: String, review_score: Float, file: Upload): Movie
+    createMovie(movie_name: String!, duration_seconds: Int!, release_date: String!, review_score: Float!, file: Upload, description: String, likes: Int): Movie
+    updateMovie(movie_id: ID!, movie_name: String, duration_seconds: Int, release_date: String, review_score: Float, file: Upload, description: String, likes: Int): Movie
     deleteMovie(movie_id: ID!): Movie
   }
 `;
