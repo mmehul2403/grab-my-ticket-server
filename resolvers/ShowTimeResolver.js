@@ -2,18 +2,28 @@ const { Op, where } = require("sequelize");
 const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 const ShowTime = require("../models/ShowTime")(sequelizeDatabase);
-
+const moment = require("moment-timezone");
 const ShowTimeResolver = {
   Query: {
     getShowTimeByMovieId: async (_, args) => {
       let movie_id = args.movie_id;
+      let queryDateStr = args.queryDate;
       if (!movie_id) {
         return [];
       }
+
+      let dateArr = queryDateStr.split("-");
+      const queryDate = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
+
+      let startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
       let show_times = await ShowTime.findAll({
         where: {
           movie_id: {
             [Op.eq]: movie_id,
+          },
+          show_date: {
+            [Op.between]: [startOfDay, endOfDay],
           },
         },
       });

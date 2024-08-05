@@ -40,7 +40,7 @@ const ShowTimeSchema = gql`
   }
 
   type Query {
-    getShowTimeByMovieId(movie_id: Int!): [MovieCinemaShowTime]
+    getShowTimeByMovieId(movie_id: Int!, queryDate: String!): [MovieCinemaShowTime]
     getShowTimeDetailById(showtime_id: Int!): ShowTimeOfCinema
   }
 `;
