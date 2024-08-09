@@ -6,7 +6,7 @@ const sequelizeDatabase = require("./config/database");
 const mongoose = require("mongoose");
 
 const dbconfig = require("./config/db_config.json")[
-  process.env.NODE_ENV || "mehul-dev"
+  process.env.NODE_ENV || "development"
 ];
 
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
