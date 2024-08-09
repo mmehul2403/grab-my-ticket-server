@@ -3,8 +3,11 @@ const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
 const { graphqlUploadExpress } = require("graphql-upload");
 const sequelizeDatabase = require("./config/database");
+const mongoose = require("mongoose");
 
-const dbconfig = require("./config/db_config.json")[process.env.NODE_ENV || "development"];
+const dbconfig = require("./config/db_config.json")[
+  process.env.NODE_ENV || "mehul-dev"
+];
 
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
 const path = require("path");
@@ -13,7 +16,22 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const cors = require("cors");
 
-// Sync the Movie model with the database
+// MongoDB connection setup
+mongoose
+  .connect(dbconfig.mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
+
+// Load the Mongoose models
+const Order = require("./models/OrderSchemaMongo");
+
 sequelizeDatabase.sync({ force: false }).then(() => {
   console.log("Database & tables created!");
 });
@@ -38,7 +56,10 @@ async function startServer() {
     console.log("###" + error);
   });
 
-  const allowedOrigins = ["https://studio.apollographql.com", "http://localhost:3000"];
+  const allowedOrigins = [
+    "https://studio.apollographql.com",
+    "http://localhost:3000",
+  ];
   const corsOptions = {
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
@@ -80,6 +101,9 @@ async function startServer() {
       req,
       res,
       sequelizeDatabase,
+      mongooseModels: {
+        Order, // Add the Order model to context
+      },
     }),
   });
 
@@ -87,22 +111,7 @@ async function startServer() {
     await sequelizeDatabase.authenticate();
     console.log("Database connection has been established successfully.");
     await server.start();
-    //Configured apollo and react application
-    const allowedOrigins = ["https://studio.apollographql.com", "http://localhost:3000"];
-    const corsOptions = {
-      origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
-      },
-      credentials: true,
-    };
 
-    app.use(cors(corsOptions));
-
-    // Added the Apollo GraphQL middleware and set the path to /graphql or /api
     server.applyMiddleware({ app, path: "/graphql", cors: false });
 
     app.listen({ port: 4000 }, () => {

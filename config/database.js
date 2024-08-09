@@ -1,6 +1,5 @@
 const { Sequelize } = require("sequelize");
-const config =
-  require("./db_config.json")[process.env.NODE_ENV || "development"];
+const config = require("./db_config.json")[process.env.NODE_ENV || "mehul-dev"];
 const mysql_db = config.mysql;
 const sequelize = new Sequelize(
   mysql_db.database,

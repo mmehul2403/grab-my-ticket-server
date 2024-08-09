@@ -13,10 +13,14 @@ const ShowTimeResolver = {
       }
 
       let dateArr = queryDateStr.split("-");
-      const queryDate = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
+      const queryDate = new Date(
+        dateArr[0],
+        parseInt(dateArr[1]) - 1,
+        dateArr[2]
+      );
 
-      let startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
-      const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
+      const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
+      const endOfDay = new Date(queryDate.setUTCHours(23, 59, 59, 999));
       let show_times = await ShowTime.findAll({
         where: {
           movie_id: {

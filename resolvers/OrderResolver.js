@@ -15,7 +15,6 @@ const OrderResolver = {
 
     getOrdersByUserId: async (_, args, ctx) => {
       let session_user_id = ctx.req.session.userId;
-      // let session_user_id = 5;
       return await OrderTable.findAll({
         where: {
           user_id: {
@@ -29,7 +28,8 @@ const OrderResolver = {
     createOrder: async (_, { ticket_num, show_time_id }, ctx) => {
       let session_user_id = ctx.req.session.userId;
       // let session_user_id = 5;//fake data for userId
-      let ticket_amount = ticket_num * (await ShowTime.findByPk(show_time_id)).ticket_price;
+      let ticket_amount =
+        ticket_num * (await ShowTime.findByPk(show_time_id)).ticket_price;
       let book_date = moment().format("YYYY-MM-DD");
       return await OrderTable.create({
         ticket_num,
