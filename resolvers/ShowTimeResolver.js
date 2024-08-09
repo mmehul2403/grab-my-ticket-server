@@ -2,6 +2,7 @@ const { Op, where } = require("sequelize");
 const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 const ShowTime = require("../models/ShowTime")(sequelizeDatabase);
+const Movie = require("../models/Movie")(sequelizeDatabase);
 const moment = require("moment-timezone");
 const ShowTimeResolver = {
   Query: {
@@ -37,6 +38,21 @@ const ShowTimeResolver = {
     getShowTimeDetailById: async (_, args) => {
       return await ShowTime.findByPk(args.showtime_id);
     },
+    getShowTimeByCinemaId: async (_, args) => {
+      let cinema_id = args.cinema_id;
+      if (!cinema_id) {
+        return [];
+      }
+
+      let show_times = await ShowTime.findAll({
+        where: {
+          cinema_id: {
+            [Op.eq]: cinema_id,
+          },
+        },
+      });
+      return show_times;
+    },
   },
   MovieCinemaShowTime: {
     cinema_name: async (cinema) => {
@@ -57,6 +73,40 @@ const ShowTimeResolver = {
   ShowTimeOfCinema: {
     cinema: async (showtime) => {
       return await Cinema.findByPk(showtime.cinema_id);
+    },
+  },
+  ShowTimeOfMovie: {
+    movie: async (showtime) => {
+      return await Movie.findByPk(showtime.movie_id);
+    },
+  },
+  Mutation: {
+    createShowTime: async (_, args) => {
+      return await ShowTime.create(args.show_time);
+    },
+    updateShowTime: async (_, args) => {
+      const show_time_id = args.show_time_id;
+      const show_time = args.show_time;
+      let srcShowTime = await ShowTime.findByPk(show_time_id);
+
+      if (!srcShowTime) {
+        return;
+      }
+      srcShowTime.seat_count = show_time.seat_count ?? srcShowTime.seat_count;
+      srcShowTime.ticket_price = show_time.ticket_price ?? srcShowTime.ticket_price;
+      srcShowTime.show_date = show_time.show_date ?? srcShowTime.show_date;
+      srcShowTime.show_start_time = show_time.show_start_time ?? srcShowTime.show_start_time;
+      srcShowTime.show_end_time = show_time.show_end_time ?? srcShowTime.show_end_time;
+      srcShowTime.available_seat_count = show_time.available_seat_count ?? srcShowTime.available_seat_count;
+      srcShowTime.movie_id = show_time.movie_id ?? srcShowTime.movie_id;
+
+      return await srcShowTime.save();
+    },
+    deleteShowTime: async (_, { show_time_id }) => {
+      const show_time = await ShowTime.findByPk(show_time_id);
+      if (!show_time) throw new Error("ShowTime not found");
+      await show_time.destroy();
+      return true;
     },
   },
 };
