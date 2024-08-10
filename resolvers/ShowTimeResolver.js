@@ -14,11 +14,7 @@ const ShowTimeResolver = {
       }
 
       let dateArr = queryDateStr.split("-");
-      const queryDate = new Date(
-        dateArr[0],
-        parseInt(dateArr[1]) - 1,
-        dateArr[2]
-      );
+      const queryDate = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
 
       const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
       const endOfDay = new Date(queryDate.setUTCHours(23, 59, 59, 999));
@@ -44,14 +40,20 @@ const ShowTimeResolver = {
         return [];
       }
 
-      let show_times = await ShowTime.findAll({
+      const { page = 1, size = 10 } = args;
+      const limit = size;
+      const offset = page * limit;
+      const { rows } = await ShowTime.findAndCountAll({
+        limit,
+        offset,
         where: {
           cinema_id: {
             [Op.eq]: cinema_id,
           },
         },
       });
-      return show_times;
+      return rows;
+      // return show_times;
     },
   },
   MovieCinemaShowTime: {
@@ -74,6 +76,9 @@ const ShowTimeResolver = {
     cinema: async (showtime) => {
       return await Cinema.findByPk(showtime.cinema_id);
     },
+    movie: async (showtime) => {
+      return await Movie.findByPk(showtime.movie_id);
+    },
   },
   ShowTimeOfMovie: {
     movie: async (showtime) => {
@@ -82,7 +87,11 @@ const ShowTimeResolver = {
   },
   Mutation: {
     createShowTime: async (_, args) => {
-      return await ShowTime.create(args.show_time);
+      let srcShowTime = args.show_time;
+
+      let dateArr = srcShowTime.show_date.split("-");
+      srcShowTime.show_date = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
+      return await ShowTime.create(srcShowTime);
     },
     updateShowTime: async (_, args) => {
       const show_time_id = args.show_time_id;
@@ -94,7 +103,10 @@ const ShowTimeResolver = {
       }
       srcShowTime.seat_count = show_time.seat_count ?? srcShowTime.seat_count;
       srcShowTime.ticket_price = show_time.ticket_price ?? srcShowTime.ticket_price;
-      srcShowTime.show_date = show_time.show_date ?? srcShowTime.show_date;
+      let show_date = show_time.show_date ?? srcShowTime.show_date;
+
+      let dateArr = show_date.split("-");
+      srcShowTime.show_date = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
       srcShowTime.show_start_time = show_time.show_start_time ?? srcShowTime.show_start_time;
       srcShowTime.show_end_time = show_time.show_end_time ?? srcShowTime.show_end_time;
       srcShowTime.available_seat_count = show_time.available_seat_count ?? srcShowTime.available_seat_count;
