@@ -3,7 +3,6 @@ const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 const ShowTime = require("../models/ShowTime")(sequelizeDatabase);
 const Movie = require("../models/Movie")(sequelizeDatabase);
-const moment = require("moment-timezone");
 const ShowTimeResolver = {
   Query: {
     getShowTimeByMovieId: async (_, args) => {
@@ -36,8 +35,30 @@ const ShowTimeResolver = {
     },
     getShowTimeByCinemaId: async (_, args) => {
       let cinema_id = args.cinema_id;
+      let movie_id = args.movie_id;
+      let show_date = args.show_date;
       if (!cinema_id) {
         return [];
+      }
+
+      let filters = {
+        cinema_id: {
+          [Op.eq]: cinema_id,
+        },
+      };
+
+      if (movie_id) {
+        filters.movie_id = { [Op.eq]: movie_id };
+      }
+      if (show_date) {
+        // console.log("###show_date:" + show_date);
+        const queryDate = new Date(show_date.split("T")[0]);
+
+        const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
+        const endOfDay = new Date(queryDate.setUTCHours(23, 59, 59, 999));
+        filters.show_date = {
+          [Op.between]: [startOfDay, endOfDay],
+        };
       }
 
       const { page = 1, size = 10 } = args;
@@ -46,14 +67,9 @@ const ShowTimeResolver = {
       const { rows } = await ShowTime.findAndCountAll({
         limit,
         offset,
-        where: {
-          cinema_id: {
-            [Op.eq]: cinema_id,
-          },
-        },
+        where: filters,
       });
       return rows;
-      // return show_times;
     },
   },
   MovieCinemaShowTime: {

@@ -68,7 +68,7 @@ const ShowTimeSchema = gql`
   type Query {
     getShowTimeByMovieId(movie_id: Int!, queryDate: String!): [MovieCinemaShowTime]
     getShowTimeDetailById(showtime_id: Int!): ShowTimeOfCinema
-    getShowTimeByCinemaId(cinema_id: Int!, page: Int, size: Int): [ShowTimeOfMovie]
+    getShowTimeByCinemaId(cinema_id: Int!, page: Int, size: Int, movie_id: Int, show_date: String): [ShowTimeOfMovie]
   }
 
   type Mutation {
