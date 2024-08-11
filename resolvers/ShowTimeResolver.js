@@ -3,6 +3,7 @@ const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 const ShowTime = require("../models/ShowTime")(sequelizeDatabase);
 const Movie = require("../models/Movie")(sequelizeDatabase);
+const momentTimeZone = require("moment-timezone");
 const ShowTimeResolver = {
   Query: {
     getShowTimeByMovieId: async (_, args) => {
@@ -51,7 +52,6 @@ const ShowTimeResolver = {
         filters.movie_id = { [Op.eq]: movie_id };
       }
       if (show_date) {
-        // console.log("###show_date:" + show_date);
         const queryDate = new Date(show_date.split("T")[0]);
 
         const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
@@ -61,7 +61,7 @@ const ShowTimeResolver = {
         };
       }
 
-      const { page = 1, size = 10 } = args;
+      const { page = 0, size = 10 } = args;
       const limit = size;
       const offset = page * limit;
       const { rows } = await ShowTime.findAndCountAll({
@@ -104,9 +104,7 @@ const ShowTimeResolver = {
   Mutation: {
     createShowTime: async (_, args) => {
       let srcShowTime = args.show_time;
-
-      let dateArr = srcShowTime.show_date.split("-");
-      srcShowTime.show_date = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
+      srcShowTime.show_date = new Date(srcShowTime.show_date.split("T")[0]).setUTCHours(0, 0, 0, 0);
       return await ShowTime.create(srcShowTime);
     },
     updateShowTime: async (_, args) => {
@@ -122,7 +120,7 @@ const ShowTimeResolver = {
       let show_date = show_time.show_date ?? srcShowTime.show_date;
 
       let dateArr = show_date.split("-");
-      srcShowTime.show_date = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
+      srcShowTime.show_date = new Date(show_date.split("T")[0]);
       srcShowTime.show_start_time = show_time.show_start_time ?? srcShowTime.show_start_time;
       srcShowTime.show_end_time = show_time.show_end_time ?? srcShowTime.show_end_time;
       srcShowTime.available_seat_count = show_time.available_seat_count ?? srcShowTime.available_seat_count;
