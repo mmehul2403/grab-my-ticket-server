@@ -3,7 +3,6 @@ const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 const ShowTime = require("../models/ShowTime")(sequelizeDatabase);
 const Movie = require("../models/Movie")(sequelizeDatabase);
-const momentTimeZone = require("moment-timezone");
 const ShowTimeResolver = {
   Query: {
     getShowTimeByMovieId: async (_, args) => {
@@ -12,12 +11,13 @@ const ShowTimeResolver = {
       if (!movie_id) {
         return [];
       }
-
+      //fix the timezone issue
       let dateArr = queryDateStr.split("-");
       const queryDate = new Date(dateArr[0], parseInt(dateArr[1]) - 1, dateArr[2]);
 
       const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
       const endOfDay = new Date(queryDate.setUTCHours(23, 59, 59, 999));
+
       let show_times = await ShowTime.findAll({
         where: {
           movie_id: {
@@ -29,8 +29,43 @@ const ShowTimeResolver = {
         },
       });
 
-      return show_times;
+      if (!show_times.length) {
+        return [];
+      }
+
+      const cinemaIds = show_times.map((show) => show.cinema_id);
+      let cinemas = await Cinema.findAll({
+        where: {
+          cinema_id: {
+            [Op.in]: cinemaIds,
+          },
+        },
+      });
+
+      // query the cinema and filter
+      let groupedResult = cinemas.map((cinema) => {
+        // console.log("#" + JSON.stringify(cinema));
+        return {
+          cinema_id: cinema.cinema_id,
+          cinema_name: cinema.cinema_name,
+          cinema_address: cinema.cinema_address,
+          show_times: show_times
+            .filter((show) => show.cinema_id === cinema.cinema_id)
+            .map((show) => ({
+              show_time_id: show.show_time_id,
+              seat_count: show.seat_count,
+              ticket_price: show.ticket_price,
+              show_date: show.show_date,
+              show_start_time: show.show_start_time,
+              show_end_time: show.show_end_time,
+            })),
+        };
+      });
+
+      console.log(JSON.stringify(groupedResult));
+      return groupedResult;
     },
+
     getShowTimeDetailById: async (_, args) => {
       return await ShowTime.findByPk(args.showtime_id);
     },
@@ -78,14 +113,6 @@ const ShowTimeResolver = {
     },
     cinema_address: async (cinema) => {
       return (await Cinema.findByPk(cinema.cinema_id)).cinema_address;
-    },
-    show_times: async (showtime) => {
-      return await ShowTime.findAll({
-        where: {
-          cinema_id: showtime.cinema_id,
-          movie_id: showtime.movie_id,
-        },
-      });
     },
   },
   ShowTimeOfCinema: {
