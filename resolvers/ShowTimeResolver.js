@@ -93,11 +93,15 @@ const ShowTimeResolver = {
         return;
       }
       srcShowTime.seat_count = show_time.seat_count ?? srcShowTime.seat_count;
-      srcShowTime.ticket_price = show_time.ticket_price ?? srcShowTime.ticket_price;
+      srcShowTime.ticket_price =
+        show_time.ticket_price ?? srcShowTime.ticket_price;
       srcShowTime.show_date = show_time.show_date ?? srcShowTime.show_date;
-      srcShowTime.show_start_time = show_time.show_start_time ?? srcShowTime.show_start_time;
-      srcShowTime.show_end_time = show_time.show_end_time ?? srcShowTime.show_end_time;
-      srcShowTime.available_seat_count = show_time.available_seat_count ?? srcShowTime.available_seat_count;
+      srcShowTime.show_start_time =
+        show_time.show_start_time ?? srcShowTime.show_start_time;
+      srcShowTime.show_end_time =
+        show_time.show_end_time ?? srcShowTime.show_end_time;
+      srcShowTime.available_seat_count =
+        show_time.available_seat_count ?? srcShowTime.available_seat_count;
       srcShowTime.movie_id = show_time.movie_id ?? srcShowTime.movie_id;
 
       return await srcShowTime.save();

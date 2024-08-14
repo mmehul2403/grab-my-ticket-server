@@ -57,6 +57,7 @@ const UserSchema = gql`
 
   type CurrentUser {
     user_id: Int!
+    email_address: String
     first_name: String
     last_name: String
     date_of_birth: String

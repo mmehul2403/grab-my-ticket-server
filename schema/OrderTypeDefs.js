@@ -12,12 +12,16 @@ const OrderTypeDefs = gql`
     ticketNum: Int!
     seats: [Seat]!
     totalPrice: Float!
+    userId: Int!
+    userEmail: String
     createdAt: String
   }
 
   type Query {
     getOrderByIdMongo(id: ID!): Order
     getAllOrdersMongo: [Order]
+    getUserOrders(userId: Int!): [Order]
+    getBookedSeats(showTimeId: Int!): [Seat]
   }
 
   type Mutation {
@@ -26,12 +30,15 @@ const OrderTypeDefs = gql`
       ticketNum: Int!
       seats: [SeatInput]!
       totalPrice: Float!
+      userId: Int!
+      userEmail: String
     ): Order
     updateOrderMongo(
       id: ID!
       ticketNum: Int!
       seats: [SeatInput]!
       totalPrice: Float!
+      userId: Int
     ): Order
     deleteOrderMongo(id: ID!): String
   }
