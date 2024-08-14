@@ -30,6 +30,7 @@ const ShowTimeSchema = gql`
     show_end_time: String
     available_seat_count: Int
     cinema: Cinema
+    movie: MovieDetail
   }
 
   type Cinema {
@@ -47,17 +48,11 @@ const ShowTimeSchema = gql`
     show_start_time: String
     show_end_time: String
     available_seat_count: Int
-    movie: Movie
+    movie: MovieDetail
   }
-  type Movie {
-    movie_id: ID
+  type MovieDetail {
+    movie_id: Int
     movie_name: String
-    duration_seconds: Int
-    release_date: String
-    review_score: Float
-    image_url: String
-    description: String
-    likes: Int
   }
 
   input ShowTimeInput {
@@ -73,7 +68,7 @@ const ShowTimeSchema = gql`
   type Query {
     getShowTimeByMovieId(movie_id: Int!, queryDate: String!): [MovieCinemaShowTime]
     getShowTimeDetailById(showtime_id: Int!): ShowTimeOfCinema
-    getShowTimeByCinemaId(cinema_id: Int!): [ShowTimeOfMovie]
+    getShowTimeByCinemaId(cinema_id: Int!, page: Int, size: Int, movie_id: Int, show_date: String): [ShowTimeOfMovie]
   }
 
   type Mutation {

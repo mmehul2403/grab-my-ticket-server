@@ -3,7 +3,6 @@ const sequelizeDatabase = require("../config/database");
 const Cinema = require("../models/Cinema")(sequelizeDatabase);
 const ShowTime = require("../models/ShowTime")(sequelizeDatabase);
 const Movie = require("../models/Movie")(sequelizeDatabase);
-const moment = require("moment-timezone");
 const ShowTimeResolver = {
   Query: {
     getShowTimeByMovieId: async (_, args) => {
@@ -12,7 +11,7 @@ const ShowTimeResolver = {
       if (!movie_id) {
         return [];
       }
-
+      //fix the timezone issue
       let dateArr = queryDateStr.split("-");
       const queryDate = new Date(
         dateArr[0],
@@ -22,6 +21,7 @@ const ShowTimeResolver = {
 
       const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
       const endOfDay = new Date(queryDate.setUTCHours(23, 59, 59, 999));
+
       let show_times = await ShowTime.findAll({
         where: {
           movie_id: {
@@ -33,25 +33,82 @@ const ShowTimeResolver = {
         },
       });
 
-      return show_times;
+      if (!show_times.length) {
+        return [];
+      }
+
+      const cinemaIds = show_times.map((show) => show.cinema_id);
+      let cinemas = await Cinema.findAll({
+        where: {
+          cinema_id: {
+            [Op.in]: cinemaIds,
+          },
+        },
+      });
+
+      // query the cinema and filter
+      let groupedResult = cinemas.map((cinema) => {
+        // console.log("#" + JSON.stringify(cinema));
+        return {
+          cinema_id: cinema.cinema_id,
+          cinema_name: cinema.cinema_name,
+          cinema_address: cinema.cinema_address,
+          show_times: show_times
+            .filter((show) => show.cinema_id === cinema.cinema_id)
+            .map((show) => ({
+              show_time_id: show.show_time_id,
+              seat_count: show.seat_count,
+              ticket_price: show.ticket_price,
+              show_date: show.show_date,
+              show_start_time: show.show_start_time,
+              show_end_time: show.show_end_time,
+            })),
+        };
+      });
+
+      console.log(JSON.stringify(groupedResult));
+      return groupedResult;
     },
+
     getShowTimeDetailById: async (_, args) => {
       return await ShowTime.findByPk(args.showtime_id);
     },
     getShowTimeByCinemaId: async (_, args) => {
       let cinema_id = args.cinema_id;
+      let movie_id = args.movie_id;
+      let show_date = args.show_date;
       if (!cinema_id) {
         return [];
       }
 
-      let show_times = await ShowTime.findAll({
-        where: {
-          cinema_id: {
-            [Op.eq]: cinema_id,
-          },
+      let filters = {
+        cinema_id: {
+          [Op.eq]: cinema_id,
         },
+      };
+
+      if (movie_id) {
+        filters.movie_id = { [Op.eq]: movie_id };
+      }
+      if (show_date) {
+        const queryDate = new Date(show_date.split("T")[0]);
+
+        const startOfDay = new Date(queryDate.setUTCHours(0, 0, 0, 0));
+        const endOfDay = new Date(queryDate.setUTCHours(23, 59, 59, 999));
+        filters.show_date = {
+          [Op.between]: [startOfDay, endOfDay],
+        };
+      }
+
+      const { page = 0, size = 10 } = args;
+      const limit = size;
+      const offset = page * limit;
+      const { rows } = await ShowTime.findAndCountAll({
+        limit,
+        offset,
+        where: filters,
       });
-      return show_times;
+      return rows;
     },
   },
   MovieCinemaShowTime: {
@@ -61,18 +118,13 @@ const ShowTimeResolver = {
     cinema_address: async (cinema) => {
       return (await Cinema.findByPk(cinema.cinema_id)).cinema_address;
     },
-    show_times: async (showtime) => {
-      return await ShowTime.findAll({
-        where: {
-          cinema_id: showtime.cinema_id,
-          movie_id: showtime.movie_id,
-        },
-      });
-    },
   },
   ShowTimeOfCinema: {
     cinema: async (showtime) => {
       return await Cinema.findByPk(showtime.cinema_id);
+    },
+    movie: async (showtime) => {
+      return await Movie.findByPk(showtime.movie_id);
     },
   },
   ShowTimeOfMovie: {
@@ -82,7 +134,11 @@ const ShowTimeResolver = {
   },
   Mutation: {
     createShowTime: async (_, args) => {
-      return await ShowTime.create(args.show_time);
+      let srcShowTime = args.show_time;
+      srcShowTime.show_date = new Date(
+        srcShowTime.show_date.split("T")[0]
+      ).setUTCHours(0, 0, 0, 0);
+      return await ShowTime.create(srcShowTime);
     },
     updateShowTime: async (_, args) => {
       const show_time_id = args.show_time_id;
@@ -95,7 +151,10 @@ const ShowTimeResolver = {
       srcShowTime.seat_count = show_time.seat_count ?? srcShowTime.seat_count;
       srcShowTime.ticket_price =
         show_time.ticket_price ?? srcShowTime.ticket_price;
-      srcShowTime.show_date = show_time.show_date ?? srcShowTime.show_date;
+      let show_date = show_time.show_date ?? srcShowTime.show_date;
+
+      let dateArr = show_date.split("-");
+      srcShowTime.show_date = new Date(show_date.split("T")[0]);
       srcShowTime.show_start_time =
         show_time.show_start_time ?? srcShowTime.show_start_time;
       srcShowTime.show_end_time =

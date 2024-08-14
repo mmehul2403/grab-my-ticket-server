@@ -29,6 +29,9 @@ const MovieResolver = {
         limit: 8,
       });
     },
+    moviesOptions: async (_, __) => {
+      return Movie.findAll();
+    },
   },
 
   Mutation: {

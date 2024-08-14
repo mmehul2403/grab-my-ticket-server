@@ -19,10 +19,14 @@ const MovieSchema = gql`
     description: String
     likes: Int
   }
-
+  type MovieOption {
+    movie_id: ID!
+    movie_name: String!
+  }
   type Query {
     movie(movie_id: ID!): Movie
     movies(page: Int, size: Int): [Movie]
+    moviesOptions: [MovieOption]
     getTop8Movies: [Movie]
   }
 
