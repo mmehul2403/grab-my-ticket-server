@@ -7,7 +7,7 @@
       "host": "localhost",
       "dialect": "mysql"
     },
-    "mongoUrl": "mongodb+srv://grabmyticket:loOlfUUrjjHz1yWD@clusteryy.rfwy8jx.mongodb.net/grabmyticket?retryWrites=true&w=majority&appName=clusteryy"
+    "mongoUrl": "xx"
   },
   "test": {
     "mysql": {
@@ -17,7 +17,7 @@
       "host": "localhost",
       "dialect": "mysql"
     },
-    "mongoUrl": "mongodb+srv://grabmyticket:loOlfUUrjjHz1yWD@clusteryy.rfwy8jx.mongodb.net/grabmyticket?retryWrites=true&w=majority&appName=clusteryy"
+    "mongoUrl": ""
   },
   "production": {
     "mysql": {
@@ -27,7 +27,7 @@
       "host": "localhost",
       "dialect": "mysql"
     },
-    "mongoUrl": "mongodb+srv://grabmyticket:loOlfUUrjjHz1yWD@clusteryy.rfwy8jx.mongodb.net/grabmyticket?retryWrites=true&w=majority&appName=clusteryy"
+    "mongoUrl": ""
   },
   "mehul-dev": {
     "mysql": {
